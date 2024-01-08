@@ -9,7 +9,7 @@ Install SDL2
     ```bash
     git clone https://github.com/LukeW2002/rigidBodySim.git
     cd nBodySimulator
-    make && make clean
+    make 
     ```
 2. Run the program
    ```bash
