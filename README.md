@@ -4,6 +4,7 @@ This is a simple and incomplete Rigid body Simulator written in C, using SDL2.
 
 
 ### Installing and Running:
+Install SDL2
 1. Clone Repository and Make
     ```bash
     git clone https://github.com/LukeW2002/rigidBodySim.git
