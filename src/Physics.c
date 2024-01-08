@@ -3,6 +3,9 @@
 #include <math.h>
 #include <stdio.h>
 
+#define WIDTH 800
+#define HEIGHT 600
+
 void diagnosticVectors(object *obj)
 {	
 	printf("Position (%g, %g)\n", obj->position.x, obj->position.y);
@@ -31,55 +34,33 @@ void collisionBallonBall(ball *ball2, ball *ball1)
 {
 	vec3D distanceVec = distanceVector(&ball2->objectBall.position, &ball1->objectBall.position);
 	double distanceScalar = sqrt(pow(distanceVec.x, 2) + pow(distanceVec.y, 2) + pow(distanceVec.z, 2)); //distanceScalar() function calls on distanceVector, this is more efficient.
-	double totalMass = ball2->mass + ball1->mass;
-
-	vec3D oldNormalVec;
-	vec3D oldTangentVec;
-
-	oldNormalVec.x = distanceVec.x / distanceScalar;
-	oldNormalVec.y = distanceVec.y / distanceScalar;
-	
-	oldTangentVec.x = -oldNormalVec.y;
-	oldTangentVec.y = oldNormalVec.x;
-
-	//Assume balls hit off at right angles
-	vec3D newNormalVec;
-	vec3D newTangentVec;
-
-	newTangentVec.x = dotproduct(&ball1->objectBall.velocity, &oldTangentVec);
-	newTangentVec.y = dotproduct(&ball2->objectBall.velocity, &oldTangentVec);
-
-	newNormalVec.x = dotproduct(&ball1->objectBall.velocity, &oldNormalVec);
-	newNormalVec.y = dotproduct(&ball2->objectBall.velocity, &oldNormalVec);
-
-	//Wikipedia on elastic collisions
-	vec3D momentum;
-	momentum.x = newNormalVec.x*(ball1->mass - ball2->mass) + 2.0*(ball2->mass)*(newNormalVec.x)/totalMass;
-	momentum.y = newNormalVec.y*(ball2->mass - ball1->mass) + 2.0*(ball1->mass)*(newNormalVec.y)/totalMass;
-
+																																																			 //
 	//If we are inside a ball, put back in bounds.
 	double epsilon = 0.5*(distanceScalar - (ball2->radius + ball1->radius));
 	if (checkCollision(ball1, ball2) == 1)
 	{
-		ball1->objectBall.position.x -= (epsilon * distanceVec.x)/distanceScalar;
-		ball1->objectBall.position.y -= (epsilon * distanceVec.y)/distanceScalar;
-		
+		printf("COLLISON\n");
 		ball1->objectBall.position.x += (epsilon * distanceVec.x)/distanceScalar;
 		ball1->objectBall.position.y += (epsilon * distanceVec.y)/distanceScalar;
+		
+		ball2->objectBall.position.x -= (epsilon * distanceVec.x)/distanceScalar;
+		ball2->objectBall.position.y -= (epsilon * distanceVec.y)/distanceScalar;
 	}
-
-	//Update Velocity from momentum
-	ball1->objectBall.velocity.x = oldNormalVec.x * newTangentVec.x + oldNormalVec.x * momentum.x;
-	ball1->objectBall.velocity.y = oldNormalVec.y * newTangentVec.y + oldNormalVec.y * momentum.y;
-
-	ball2->objectBall.velocity.x = oldNormalVec.x * newTangentVec.x + oldNormalVec.x * momentum.x;
-	ball2->objectBall.velocity.y = oldNormalVec.y * newTangentVec.y + oldNormalVec.y * momentum.y;
 }
 
 
 
-void verlet(object *obj, double dt)
+void verlet(object *obj, double dt, int radius)
 {
+	if (obj->position.x - radius > WIDTH || obj->position.x + radius < 0)
+	{
+
+		obj->velocity.x = -obj->velocity.x;
+	}
+	if (obj->position.y - radius > HEIGHT || obj->position.y + radius < 0)
+	{
+		obj->velocity.y = -obj->velocity.y;
+	}
 	// 1: v(t + dt/2) = v(t) + 0.5 * dt * a(t)
 	vec3D velHalfStep;
 	velHalfStep.x = obj->velocity.x + 0.5f*dt*obj->acceleration.x; 
@@ -99,8 +80,7 @@ void verlet(object *obj, double dt)
 
 	obj->oldPosition = obj->position;
 
-	diagnosticVectors(obj);
-	
-}
+	//diagnosticVectors(obj);
+	}
 
 

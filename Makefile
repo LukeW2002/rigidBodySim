@@ -6,10 +6,10 @@ build:
 CC := gcc
 
 # Compiler flags
-CFLAGS := -Wall -Wextra -Werror
+CFLAGS := -Wall -Wextra -Werror -O3
 
 # Library
-LIBS := -lSDL2 -lm
+LIBS := -lSDL2 -lSDL2_ttf -lm
 
 # Source files
 SRC := src/main.c src/Physics.c src/Render.c src/Vector.c

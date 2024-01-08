@@ -4,6 +4,6 @@
 
 double checkCollision(ball *ball2, ball *ball1);
 void collisionBallonBall(ball *ball2, ball *ball1);
-void verlet(object *obj, double dt);
+void verlet(object *obj, double dt, int radius);
 
 #endif
