@@ -8,12 +8,12 @@ Install SDL2 and SDL2_ttf
 1. Clone Repository and Make
     ```bash
     git clone https://github.com/LukeW2002/rigidBodySim.git
-    cd nBodySimulator
+    cd rigidBodySim
     make 
     ```
 2. Run the program
    ```bash
-   ./orbits
+   ./rigidBody
    ```
 
 ### Contributing:
