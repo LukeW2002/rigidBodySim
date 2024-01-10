@@ -17,11 +17,12 @@ typedef struct
 	vec3D acceleration;
 }object;
 
-typedef struct 
+typedef struct  ball
 {
 	object objectBall;
 	double radius;
 	double mass;
+	struct ball *next;
 }ball;
 
 #endif

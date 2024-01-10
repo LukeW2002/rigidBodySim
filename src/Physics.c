@@ -5,6 +5,7 @@
 
 #define WIDTH 800
 #define HEIGHT 600
+#define BOUNCE 0.8
 
 void diagnosticVectors(object *obj)
 {	
@@ -39,7 +40,7 @@ void collisionBallonBall(ball *ball2, ball *ball1)
 	double epsilon = 0.5*(distanceScalar - (ball2->radius + ball1->radius));
 	if (checkCollision(ball1, ball2) == 1)
 	{
-		printf("COLLISON\n");
+	//	printf("COLLISON\n");
 		ball1->objectBall.position.x += (epsilon * distanceVec.x)/distanceScalar;
 		ball1->objectBall.position.y += (epsilon * distanceVec.y)/distanceScalar;
 		
@@ -52,14 +53,25 @@ void collisionBallonBall(ball *ball2, ball *ball1)
 
 void verlet(object *obj, double dt, int radius)
 {
-	if (obj->position.x - radius > WIDTH || obj->position.x + radius < 0)
+	if (obj->position.x - radius > WIDTH )
 	{
-
-		obj->velocity.x = -obj->velocity.x;
+		obj->position.x = WIDTH - radius;
+		obj->velocity.x = -obj->velocity.x * BOUNCE;
 	}
-	if (obj->position.y - radius > HEIGHT || obj->position.y + radius < 0)
+	else if (obj->position.x + radius < 0) 
 	{
-		obj->velocity.y = -obj->velocity.y;
+		obj->position.x = radius;
+		obj->velocity.x = -obj->velocity.x * BOUNCE;
+	}
+	if (obj->position.y - radius > HEIGHT )
+	{
+		obj->position.y = HEIGHT - radius;
+		obj->velocity.y = -obj->velocity.y * BOUNCE;
+	}
+	else if (obj->position.y + radius < 0)
+	{
+		obj->position.y = radius;
+		obj->velocity.y = -obj->velocity.y * BOUNCE;
 	}
 	// 1: v(t + dt/2) = v(t) + 0.5 * dt * a(t)
 	vec3D velHalfStep;
@@ -81,6 +93,6 @@ void verlet(object *obj, double dt, int radius)
 	obj->oldPosition = obj->position;
 
 	//diagnosticVectors(obj);
-	}
+}
 
 

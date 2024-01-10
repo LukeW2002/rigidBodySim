@@ -4,14 +4,41 @@
 
 void drawCircle(SDL_Renderer* renderer, object* obj, double radius, unsigned int r, unsigned int g, unsigned int b)
 {
-	for (int i = 0; i < 360; i++)
+	SDL_SetRenderDrawColor(renderer, 255, r, g, b);
+	const int32_t diameter = (radius * 2);
+
+	int32_t x =  ( radius  - 1);
+	int32_t y = 0;
+	int32_t tx = 1;
+	int32_t ty = 1;
+	int32_t error = (tx - diameter);
+
+	while (x >=y)
 	{
-		double angle = i * M_PI / 180.0;
-		double circleX = obj->position.x + radius * cos(angle);
-		double circleY = obj->position.y + radius * sin(angle);
-		SDL_SetRenderDrawColor(renderer, r, g, b, 255);
-		SDL_RenderDrawPoint(renderer, (int)circleX, (int)circleY);
+		SDL_RenderDrawPoint(renderer, obj->position.x + x, obj->position.y - y);
+		SDL_RenderDrawPoint(renderer, obj->position.x + x, obj->position.y + y);
+		SDL_RenderDrawPoint(renderer, obj->position.x - x, obj->position.y - y);
+		SDL_RenderDrawPoint(renderer, obj->position.x - x, obj->position.y + y);
+		SDL_RenderDrawPoint(renderer, obj->position.x + y, obj->position.y - x);
+		SDL_RenderDrawPoint(renderer, obj->position.x + y, obj->position.y + x);
+		SDL_RenderDrawPoint(renderer, obj->position.x - y, obj->position.y - x);
+		SDL_RenderDrawPoint(renderer, obj->position.x - y, obj->position.y + x);
+
+		if (error <= 0)
+		{
+			++y;
+			error += ty;
+			ty += 2;
+		}
+
+		if (error > 0)
+		{
+			--x;
+			tx += 2;
+			error += (tx - diameter);
+		}
 	}
+
 }
 
 void drawVelocity(SDL_Renderer* renderer, object* obj, double dt)

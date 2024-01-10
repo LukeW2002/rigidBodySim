@@ -17,7 +17,7 @@ SDL_Renderer *renderer;
 TTF_Font* font;
 
 //Adds ball to a list
-void addBallToList(ball **head)
+void addBallToList(ball **head, int mass, int radius)
 {
 	ball *newBall = (ball*)malloc(sizeof(ball));
 	if (newBall == NULL)
@@ -38,17 +38,7 @@ void addBallToList(ball **head)
 	newBall->next = *head;
 	*head = newBall;
 }
-int countBall(ball* head)
-{
-	int count = 0;
-	ball *currentBall = head;
-	while (currentBall != NULL)
-	{
-		count++;
-		currentBall = currentBall->next;
-	}
-	return count;
-}
+
 void proccessBall(ball *head, double dt)
 {
 	ball *currentBall = head;
@@ -59,7 +49,7 @@ void proccessBall(ball *head, double dt)
 	}
 }
 
-void renderBall(SDL_Renderer *renderer, ball *head)
+void renderBalll(ball *head, SDL_Renderer *renderer)
 {
 	ball* currentBall = head;
 	while (currentBall != NULL)
@@ -68,16 +58,6 @@ void renderBall(SDL_Renderer *renderer, ball *head)
 		currentBall = currentBall->next;
 	}
 		
-}
-
-void destroyBallList(ball **head)
-{
-	while(*head != NULL)
-	{
-		ball *temp = *head; //move to current node
-		*head = (*head)->next; //moves to next node	
-		free(temp); //frees
-	}
 }
 
 int main()
@@ -165,21 +145,21 @@ int main()
 		SDL_RenderClear(renderer);
 
 		SDL_RenderCopy(renderer, Message, NULL, &Message_rect);
-		renderBall(renderer, head);
 
+		for (int i = 0; i < MAX_BALLS; i++)
+		{
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+			drawCircle(renderer, &balls[i].objectBall, balls[i].radius, 255, 255, 255);
+		}
 		
 		SDL_RenderPresent(renderer);
 		SDL_Delay(16);
-
-		addBallToList(&head);
 
 		Uint64 end = SDL_GetPerformanceCounter();
 
 		float elapsed = (end - start) / (float)SDL_GetPerformanceFrequency();
 		printf("FPS: %f\n", 1.0f/elapsed);
-		printf("Amount of Balls: %i\n", countBall(head));
 	}
-	destroyBallList(&head);
 	SDL_FreeSurface(text);
 	SDL_DestroyTexture(Message);
 	TTF_CloseFont(font);
